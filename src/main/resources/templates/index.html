@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List</title>
+    <link rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<style>
+    body {
+        background: #333;
+        font-size: 50px;
+    }
+
+    .a {
+        padding-inline: 2%;
+        float: left;
+        max-width: 0;
+        font-size: 40px;
+    }
+
+    .y {
+        float: right;
+        font-size: 36px;
+        border: 0;
+        background: transparent;
+        color: bisque;
+        text-indent: -13px;
+        margin-right: 32px;
+    }
+
+    .x {
+        float: right;
+        font-size: 36px;
+        border: 0;
+        background: transparent;
+        color: bisque;
+    }
+
+    .form {
+        position: relative;
+        width: 500px;
+        margin: 0 auto;
+    }
+
+    .secondForm {
+        position: relative;
+        width: auto;
+        margin: 0 auto;
+    }
+
+    .i {
+        width: 100%;
+        height: 43px;
+        padding-left: 10px;
+        border: 8px solid #282828;;
+        border-radius: 5px;
+        outline: none;
+        background: #333;
+        color: #9E9C9C;
+    }
+
+    .b {
+        position: absolute;
+        top: 5px;
+        right: -28px;
+        width: 48px;
+        height: 60px;
+        border: none;
+        background: #282828;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+    }
+
+    .d {
+        border-radius: 25px;
+        background: #595959;
+        width: 60%;
+        height: 20%;
+        margin: 10px 0;
+    }
+
+    .c {
+        width: 66%;
+        background: #595959;
+        outline: none;
+        border: none;
+        text-align: center;
+    }
+
+    .z {
+        float: right;
+        font-size: 36px;
+        border: 0;
+        background: transparent;
+        color: #ffffff;
+    }
+
+</style>
+
+<form class="form" align="center" th:method="POST" th:action="@{/notes}" th:object="${field}">
+    <input class="i" type="text" th:value="${task}" id="task" name="task" style="font-size: xx-large"
+           placeholder="Title..."/>
+    <button class="b" type="submit" style="font-size: xx-large; color: azure">+</button>
+</form>
+
+<script>
+    function replace(hide, show) {
+        document.getElementById(hide).style.display = "none";
+        document.getElementById(show).style.display = "block";
+    }
+</script>
+
+<th:block th:each="field : ${notes}" th:switch="${field.getCheckBox()}">
+    <div align="center" style="padding-inline: 10%">
+        <div class="d" th:case="${false}">
+            <a class="a" style="color: #720000; text-decoration:none" th:href="@{/notes/{id}(id=${field.getId()})}">
+                &#10006;</a>
+            <div th:id="@{span{id}(id=${field.getId()})}">
+            <span style="color: #c8c8c8"
+                  th:href="@{/notes/{id}(id=${field.getId()})}"
+                  th:text="${field.getTask()}">text</span>
+                <form style="float: right; width: 0px" th:method="DELETE"
+                      th:action="@{/notes/{id}(id=${field.getId()})}"
+                      th:object="${field}">
+                    <button class="z" type="submit">&#128465;</button>
+                </form>
+                <button class="y" type="button" th:onclick="@{replace('span{id}', 'form{id}')(id=${field.getId()})}">
+                    &#9998;
+                </button>
+            </div>
+        </div>
+        <div class="d" th:case="${true}">
+            <a class="a" style="color: #009702; text-decoration:none" th:href="@{/notes/{id}(id=${field.getId()})}">
+                &#10004;</a>
+            <div th:id="@{span{id}(id=${field.getId()})}">
+            <span style="color: #969696; text-decoration:line-through"
+                  th:href="@{/notes/{id}(id=${field.getId()})}"
+                  th:text="${field.getTask()}">text</span>
+                <form style="float: right; width: 0px" th:method="DELETE"
+                      th:action="@{/notes/{id}(id=${field.getId()})}"
+                      th:object="${field}">
+                    <button class="z" type="submit">&#128465;</button>
+                </form>
+                <button class="y" type="button" th:onclick="@{replace('span{id}', 'form{id}')(id=${field.getId()})}">
+                    &#9998;
+                </button>
+            </div>
+        </div>
+        <div class="d" th:id="@{form{id}(id=${field.getId()})}" style="display: none">
+            <form class="secondForm" th:method="PATCH" th:action="@{/notes/{id}(id=${field.getId()})}"
+                  th:object="${field}">
+                <input class="c" style="font-size: xxx-large; color:#c8c8c8" type="text"
+                       th:value="${updatedTask}" id="updatedTask" name="updatedTask"
+                       th:placeholder="${field.getTask()}"/>
+                <button class="x" type="button" th:onclick="@{replace('form{id}', 'span{id}')(id=${field.getId()})}">
+                    &#9998;
+                </button>
+            </form>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>
